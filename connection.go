@@ -31,6 +31,19 @@ import (
 	"github.com/jacobsa/fuse/internal/fusekernel"
 )
 
+// UniqueFuseID returns the FuseID / Unique value from ctx.
+func UniqueFuseID(ctx context.Context) uint64 {
+	var key interface{} = contextKey
+	foo := ctx.Value(key)
+	state, ok := foo.(opState)
+	if !ok {
+		//panic(fmt.Sprintf("UniqueFuseID called with invalid context: %#v", ctx))
+		return 0
+	}
+	inMsg := state.inMsg
+	return inMsg.Header().Unique
+}
+
 type contextKeyType uint64
 
 var contextKey interface{} = contextKeyType(0)
